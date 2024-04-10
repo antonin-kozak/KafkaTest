@@ -20,7 +20,7 @@ public class Receive {
         consumer.subscribe(Arrays.asList(AdminHelper.TOPIC_NAME));
 
         while (true) {
-            System.out.print(".");
+
             ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(100));
             for (ConsumerRecord<String, String> record : records) {
                 System.out.printf("offset = %d, key = %s, value = %s%n", record.offset(), record.key(), record.value());

@@ -13,8 +13,20 @@ public class Send {
         props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
 
         Producer<String, String> producer = new KafkaProducer<>(props);
+
+        // shutdown
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            System.out.println("Stopping producer");
+            producer.close();
+        }));
+
         for (int i = 0; i < 100; i++) {
-            producer.send(new ProducerRecord<>(AdminHelper.TOPIC_NAME, Integer.toString(i), Integer.toString(i * 2)));
+            String topic = AdminHelper.TOPIC_NAME;
+            String key = Integer.toString(i);
+            String value = Integer.toString(i * 2);
+
+            ProducerRecord<String, String> record = new ProducerRecord<>(topic, key, value);
+            producer.send(record);
             System.out.println("Sent: " + i);
         }
         producer.close();
